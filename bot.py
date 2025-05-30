@@ -7,8 +7,9 @@ TELEGRAM_TOKEN = "7772214943:AAGXbULvJzWzYoGd4-mMac9ppIhckB8T_XU"
 HF_API_TOKEN = "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"
 
 # 📡 آدرس مدل GPT2 فارسی
-API_URL = "https://api-inference.huggingface.co/models/HooshvareLab/gpt2-fa"
+API_URL = "https://api-inference.huggingface.co/models/m3hrdadfi/bert2bert-fa-question-generation"
 headers = {"Authorization": f"Bearer {HF_API_TOKEN}"}
+
 
 # 🧠 دریافت و ارسال پاسخ از مدل
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
