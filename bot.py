@@ -1,39 +1,38 @@
+import os
 import requests
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 
-# ✅ توکن‌ها
 TELEGRAM_TOKEN = "7772214943:AAGXbULvJzWzYoGd4-mMac9ppIhckB8T_XU"
-HF_API_TOKEN = "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"
+OPENROUTER_API_KEY = "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"
 
-# 📡 آدرس مدل GPT2 فارسی
-API_URL = "https://api-inference.huggingface.co/models/m3hrdadfi/bert2bert-fa-question-generation"
-headers = {"Authorization": f"Bearer {HF_API_TOKEN}"}
-
-
-# 🧠 دریافت و ارسال پاسخ از مدل
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_input = update.message.text.strip()
-    payload = {"inputs": user_input}
-    
-    response = requests.post(API_URL, headers=headers, json=payload)
+    headers = {
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "model": "mistralai/mistral-7b-instruct",
+        "messages": [
+            {"role": "system", "content": "تو یک دستیار هوش مصنوعی فارسی هستی. فقط به زبان فارسی محترمانه و دقیق پاسخ بده."},
+            {"role": "user", "content": user_input}
+        ]
+    }
+
     try:
-        output = response.json()[0]["generated_text"]
+        response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=data)
+        output = response.json()['choices'][0]['message']['content']
     except Exception as e:
-        output = "متاسفم، نتونستم پاسخ بدم. دوباره تلاش کن."
+        output = "متاسفم، مشکلی در پاسخ‌گویی پیش آمده 😓"
 
     await update.message.reply_text(output)
 
-# 👋 پیام شروع
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("سلام! من یه ربات هوش مصنوعی فارسی هستم. ازم سوال بپرس 😊")
+    await update.message.reply_text("سلام! من دستیار فارسی شما هستم. هر سوالی داشتی بپرس 🤖")
 
-# 🏃 اجرای ربات
 if __name__ == '__main__':
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
-
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-
-    print("✅ ربات در حال اجراست...")
     app.run_polling()
