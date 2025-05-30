@@ -3,7 +3,7 @@ import requests
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 
-TELEGRAM_TOKEN = "7772214943:AAGXbULvJzWzYoGd4-mMac9ppIhckB8T_XU"
+TELEGRAM_TOKEN = "7772214943:AAEqa_2CirhzV7K4hkdbjAHXhzC7s82B6XE"
 OPENROUTER_API_KEY = "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"
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
